@@ -1,0 +1,1 @@
+# Schemas for creating a weightEntry

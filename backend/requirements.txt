@@ -1,0 +1,5 @@
+fastapi[standard]
+aiosqlite
+SQLAlchemy
+Alembic
+FastAPI-Users
