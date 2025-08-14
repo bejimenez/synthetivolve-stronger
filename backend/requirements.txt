@@ -2,4 +2,4 @@ fastapi[standard]
 aiosqlite
 SQLAlchemy
 Alembic
-FastAPI-Users
+FastAPI-Users[sqlalchemy]

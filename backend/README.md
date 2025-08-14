@@ -172,6 +172,8 @@ It doesn't contain any endpoint logic itself. Its primary responsibilities are:
 2.  Including the main router that aggregates all your endpoints.
 3.  Configuring application-level settings and middleware (like CORS).
 
+Run the app with uvicorn app.main:app --reload
+
 ---
 
 ### 1. The Main Application Entry Point (`backend/main.py`)
