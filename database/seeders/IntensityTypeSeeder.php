@@ -2,16 +2,21 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\IntensityType;
 use Illuminate\Database\Seeder;
 
 class IntensityTypeSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        $types = [
+            ['name' => 'RPE', 'slug' => 'rpe'],
+            ['name' => '%1RM', 'slug' => 'percentage_1rm'],
+            ['name' => 'RIR', 'slug' => 'rir'],
+        ];
+
+        foreach ($types as $type) {
+            IntensityType::create($type);
+        }
     }
 }
