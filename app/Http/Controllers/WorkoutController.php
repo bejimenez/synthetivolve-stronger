@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Workout;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class WorkoutController extends Controller
 {
@@ -61,5 +62,22 @@ class WorkoutController extends Controller
     public function destroy(Workout $workout)
     {
         //
+    }
+
+    public function start()
+    {
+        dd('start workout');
+        //return Inertia::render('workouts/start');
+    }
+
+    public function stop()
+    {
+        //
+    }
+
+    public function active()
+    {
+        dd('active workout');
+        //return Inertia::render('workouts/active');
     }
 }

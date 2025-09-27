@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Database } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Database, SquareKanban, Dumbbell } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -18,6 +18,16 @@ const mainNavItems: NavItem[] = [
         title: 'Exercise Database',
         href: '/exercises',
         icon: Database,
+    },
+    {
+        title: 'Mesocycle Planner',
+        href: '/mesocycles',
+        icon: SquareKanban,
+    },
+    {
+        title: 'Training Log',
+        href: '/workout/start',
+        icon: Dumbbell,
     },
 ];
 

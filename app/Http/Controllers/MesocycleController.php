@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mesocycle;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class MesocycleController extends Controller
 {
@@ -12,7 +13,7 @@ class MesocycleController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('mesocycles/index');
     }
 
     /**

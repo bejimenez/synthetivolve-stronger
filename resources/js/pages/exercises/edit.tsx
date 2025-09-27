@@ -17,11 +17,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function ExerciseForm() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Create Exercise" />
+            <Head title="Edit Exercise" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Create a New Exercise</CardTitle>
+                        <CardTitle>Edit Exercise Name</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form className='flex flex-col gap-4 autoComplete=off'>
