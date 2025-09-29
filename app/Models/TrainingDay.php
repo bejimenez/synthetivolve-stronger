@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class TrainingDay extends Model
 {
@@ -18,11 +19,27 @@ class TrainingDay extends Model
             'name',
             'order_index',
             'notes',
+            'is_second_session',
+            'parent_training_day_id',
+        ];
+
+    protected $casts = [
+            'is_second_session' => 'boolean',
         ];
 
     public function mesocycleWeek(): BelongsTo
     {
         return $this->belongsTo(MesocycleWeek::class);
+    }
+
+    public function parentTrainingDay(): BelongsTo
+    {
+        return $this->belongsTo(TrainingDay::class, 'parent_training_day_id');
+    }
+
+    public function secondSession(): HasOne
+    {
+        return $this->hasOne(TrainingDay::class, 'parent_training_day_id');
     }
 
     public function muscleGroups(): BelongsToMany
@@ -45,7 +62,17 @@ class TrainingDay extends Model
 
     public function scopeForDay($query, $dayNumber)
     {
-        return $query->where('day_number', $dayNumber);
+        return $query->where('day_number', $daynumber);
+    }
+
+    public function scopeFirstSessions($query)
+    {
+        return $query->where('is_second_session', false);
+    }
+
+    public function scopeSecondSessions($query)
+    {
+        return $query->where('is_second_session', true);
     }
 
     public function getTotalSetsAttribute()
@@ -56,7 +83,7 @@ class TrainingDay extends Model
     public function getVolumeByMuscleGroup()
     {
         return $this->plannedExercises()
-            ->with('exercise.muscleGroups')
+            ->with('exercises.muscleGroups')
             ->get()
             ->flatMap(function ($plannedExercise) {
                 return $plannedExercise->exercise->muscleGroups->map(function ($muscleGroup) use ($plannedExercise) {
