@@ -31,6 +31,7 @@ class EquipmentSeeder extends Seeder
                 ['name' => 'Medicine Ball', 'slug' => 'medicine-ball'],
                 ['name' => 'Landmine', 'slug' => 'landmine'],
                 ['name' => 'None', 'slug' => 'none'],
+                ['name' => 'Preacher Bench', 'slug' => 'preacher-bench'],
             ];
 
         foreach ($equipment as $item) {

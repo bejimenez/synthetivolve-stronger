@@ -15,18 +15,95 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class ExerciseController extends Controller
 {
     use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $exercises = Exercise::with(['primaryMuscleGroup', 'equipment'])
-            ->where('user_id', Auth::id())
-            ->orderBy('name')
-            ->paginate(15);
+        $query = Exercise::with(['primaryMuscleGroup', 'equipment', 'muscleGroups'])
+            ->where('user_id', Auth::id());
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'ILIKE', "%{$searchTerm}%")
+                  ->orWhereHas('primaryMuscleGroup', function ($mg) use ($searchTerm) {
+                      $mg->where('name', 'ILIKE', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('equipment', function ($eq) use ($searchTerm) {
+                      $eq->where('name', 'ILIKE', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('muscleGroups', function ($mg) use ($searchTerm) {
+                      $mg->where('name', 'ILIKE', "%{$searchTerm}%");
+                  });
+            });
+        }
+
+        // Filter by muscle group
+        if ($request->filled('muscle_group') && $request->muscle_group !== 'all') {
+            $query->where(function ($q) use ($request) {
+                $q->where('primary_muscle_group_id', $request->muscle_group)
+                  ->orWhereHas('muscleGroups', function ($mg) use ($request) {
+                      $mg->where('muscle_group_id', $request->muscle_group);
+                  });
+            });
+        }
+
+        // Filter by equipment
+        if ($request->filled('equipment')) {
+            if ($request->equipment === 'bodyweight') {
+                $query->whereNull('equipment_id');
+            } else {
+                $query->where('equipment_id', $request->equipment);
+            }
+        }
+
+        // Sorting
+        $sortField = $request->get('sort', 'name');
+        $sortDirection = $request->get('direction', 'asc');
+
+        switch ($sortField) {
+            case 'name':
+                $query->orderBy('name', $sortDirection);
+                break;
+            case 'primary_muscle_group':
+                $query->join('muscle_groups', 'exercises.primary_muscle_group_id', '=', 'muscle_groups.id')
+                      ->orderBy('muscle_groups.name', $sortDirection)
+                      ->select('exercises.*');
+                break;
+            case 'equipment':
+                $query->leftJoin('equipment', 'exercises.equipment_id', '=', 'equipment.id')
+                      ->orderBy('equipment.name', $sortDirection)
+                      ->select('exercises.*');
+                break;
+            case 'created_at':
+                $query->orderBy('created_at', $sortDirection);
+                break;
+            default:
+                $query->orderBy('name', 'asc');
+        }
+
+        // Add secondary sort by name for consistency
+        if ($sortField !== 'name') {
+            $query->orderBy('exercises.name', 'asc');
+        }
+
+        $exercises = $query->paginate(15)
+            ->withQueryString(); // Preserve query parameters in pagination links
 
         return Inertia::render('exercises/index', [
             'exercises' => ExerciseResource::collection($exercises),
+            'muscleGroups' => MuscleGroup::orderBy('display_order')->get(['id', 'name']),
+            'equipment' => Equipment::orderBy('name')->get(['id', 'name']),
+            'filters' => [
+                'search' => $request->search,
+                'muscle_group' => $request->muscle_group,
+                'equipment' => $request->equipment,
+                'sort' => $sortField,
+                'direction' => $sortDirection,
+            ],
         ]);
     }
 
@@ -85,8 +162,12 @@ class ExerciseController extends Controller
     {
         $this->authorize('view', $exercise);
 
+        $exercise->load(['primaryMuscleGroup', 'equipment', 'muscleGroups', 'stats' => function ($query) {
+            $query->where('user_id', Auth::id());
+        }]);
+
         return Inertia::render('exercises/show', [
-            'exercise' => new ExerciseResource($exercise->load(['primaryMuscleGroup', 'equipment', 'muscleGroups'])),
+            'exercise' => new ExerciseResource($exercise),
         ]);
     }
 
