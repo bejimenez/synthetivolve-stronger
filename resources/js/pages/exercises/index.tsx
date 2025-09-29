@@ -72,6 +72,11 @@ interface MuscleGroup {
     name: string;
 }
 
+interface Equipment {
+    id: number;
+    name: string;
+}
+
 interface PaginatedLink {
     url: string | null;
     label: string;
@@ -95,6 +100,7 @@ interface Props {
         meta: PaginatedMeta;
     };
     muscleGroups: MuscleGroup[];
+    equipment: Equipment[];
     filters: {
         search?: string;
         muscle_group?: string;
@@ -106,17 +112,18 @@ interface Props {
 
 type SortField = 'name' | 'primary_muscle_group' | 'equipment' | 'created_at';
 
-export default function Index({ exercises, muscleGroups, filters: initialFilters }: Props) {
+export default function Index({ exercises, muscleGroups, equipment, filters: initialFilters }: Props) {
     const [filters, setFilters] = useState({
         search: initialFilters.search || '',
-        muscle_group: initialFilters.muscle_group || '',
+        muscle_group: initialFilters.muscle_group || 'all',
+        equipment: initialFilters.equipment || 'all',
         sort: (initialFilters.sort as SortField) || 'name',
         direction: initialFilters.direction || 'asc',
     });
 
     const debouncedRefetch = useDebouncedCallback((newFilters) => {
         const cleanFilters = Object.fromEntries(
-            Object.entries(newFilters).filter(([, value]) => value)
+            Object.entries(newFilters).filter(([key, value]) => value && value !== 'all')
         );
         router.get('/exercises', cleanFilters as any, {
             preserveState: true,
@@ -139,6 +146,10 @@ export default function Index({ exercises, muscleGroups, filters: initialFilters
     const handleMuscleGroupFilter = (muscleGroupId: string) => {
         setFilters(prev => ({ ...prev, muscle_group: muscleGroupId }));
     };
+
+    const handleEquipmentFilter = (equipmentId: string) => {
+        setFilters(prev => ({ ...prev, equipment: equipmentId }));
+    };
     
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -148,7 +159,8 @@ export default function Index({ exercises, muscleGroups, filters: initialFilters
     const clearFilters = () => {
         setFilters({
             search: '',
-            muscle_group: '',
+            muscle_group: 'all',
+            equipment: 'all',
             sort: 'name',
             direction: 'asc',
         });
@@ -175,7 +187,7 @@ export default function Index({ exercises, muscleGroups, filters: initialFilters
         </button>
     );
 
-    const hasActiveFilters = filters.search || filters.muscle_group;
+    const hasActiveFilters = filters.search || (filters.muscle_group && filters.muscle_group !== 'all') || (filters.equipment && filters.equipment !== 'all');
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -218,10 +230,27 @@ export default function Index({ exercises, muscleGroups, filters: initialFilters
                                 <SelectValue placeholder="All muscle groups" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="Enter">All muscle groups</SelectItem>
+                                <SelectItem value="all">All muscle groups</SelectItem>
                                 {muscleGroups.map((group) => (
                                     <SelectItem key={group.id} value={group.id.toString()}>
                                         {group.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        {/* Equipment Filter */}
+                        <Select value={filters.equipment} onValueChange={handleEquipmentFilter}>
+                            <SelectTrigger className="w-full sm:w-48">
+                                <Filter className="mr-2 h-4 w-4" />
+                                <SelectValue placeholder="All equipment" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All equipment</SelectItem>
+                                <SelectItem value="bodyweight">Bodyweight</SelectItem>
+                                {equipment.map((item) => (
+                                    <SelectItem key={item.id} value={item.id.toString()}>
+                                        {item.name}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
