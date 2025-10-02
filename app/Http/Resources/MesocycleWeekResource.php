@@ -14,6 +14,17 @@ class MesocycleWeekResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'mesocycle_id' => $this->mesocycle_id,
+            'week_number' => $this->week_number,
+            'week_type' => $this->week_type,
+            'intensity_modifier' => (float) $this->intensity_modifier,
+            'volume_modifier' => (float) $this->volume_modifier,
+            'notes' => $this->notes,
+            
+            // Relationships - only when loaded
+            'training_days' => TrainingDayResource::collection($this->whenLoaded('trainingDays')),
+        ];
     }
 }

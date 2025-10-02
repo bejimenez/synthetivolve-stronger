@@ -112,7 +112,7 @@ export default function Show({
         const reordered = arrayMove(allExercises, sourceIndex, targetIndex);
 
         // if moving to different day
-        if targetDayId != sourceExercise.training_day_id) {
+        if (targetDayId != sourceExercise.training_day_id) {
             const movedExercise = reordered[targetIndex];
             movedExercise.training_day_id = targetDayId;
         }
