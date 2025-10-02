@@ -224,7 +224,7 @@ export function AddExerciseDialog({
                                                 <SelectValue placeholder="Select type" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="">None</SelectItem>
+                                                <SelectItem value="Content">None</SelectItem>
                                                 {intensityTypes.map((type) => (
                                                     <SelectItem
                                                         key={type.id}
@@ -264,7 +264,7 @@ export function AddExerciseDialog({
                                             <SelectValue placeholder="Select technique" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="">Straight Sets</SelectItem>
+                                            <SelectItem value="Technique">Straight Sets</SelectItem>
                                             {techniqueTypes.map((type) => (
                                                 <SelectItem
                                                     key={type.id}
@@ -275,20 +275,6 @@ export function AddExerciseDialog({
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                </div>
-
-                                {/* Rest Time */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="rest-seconds">Rest Time (seconds)</Label>
-                                    <Input
-                                        id="rest-seconds"
-                                        type="number"
-                                        min="0"
-                                        max="600"
-                                        placeholder="e.g., 90"
-                                        value={restSeconds}
-                                        onChange={(e) => setRestSeconds(e.target.value)}
-                                    />
                                 </div>
 
                                 {/* Notes */}

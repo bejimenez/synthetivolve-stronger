@@ -231,9 +231,9 @@ class MesocycleController extends Controller
                 'exercise_id' => 'required|exists:exercises,id',
                 'sets' => 'required|integer|min:1|max:20',
                 'rep_range' => 'required|string|max:50',
-                'intensity_type_id' => 'nullable|exists:intensity_types_id',
+                'intensity_type_id' => 'nullable|exists:intensity_types,id',
                 'intensity_value' => 'nullable|numeric|min:0',
-                'technique_type_id' => 'nullable|exists:technique_types_id',
+                'technique_type_id' => 'nullable|exists:technique_types,id',
                 'notes' => 'nullable|string|max:500',
             ]);
 
