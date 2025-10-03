@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import { 
     DndContext, 
@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { Button } from '@/components/ui/button';
-import { Plus, Copy, Settings } from 'lucide-react';
+import { Plus, Copy, Settings, ArrowLeft } from 'lucide-react';
 import { TrainingDayColumn } from '@/components/mesocycle/training-day-column';
 import { AddExerciseDialog } from '@/components/mesocycle/add-exercise-dialog';
 import { MesocycleShowPageProps, PlannedExercise, TrainingDay } from '@/types/mesocycle';
@@ -189,19 +189,27 @@ export default function Show({
             <div className="flex h-full flex-col">
                 {/* Header */}
                 <div className="border-b border-sidebar-border bg-sidebar px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-2xl font-bold">{mesocycle.name}</h1>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex-1 min-w-0">
+                            <h1 className="text-2xl font-bold truncate">{mesocycle.name}</h1>
                             {mesocycle.description && (
-                                <p className="text-sm text-muted-foreground mt-1">
+                                <p className="text-sm text-muted-foreground mt-1 truncate">
                                     {mesocycle.description}
                                 </p>
                             )}
                         </div>
-                        <Button variant="outline" size="sm">
-                            <Settings className="h-4 w-4 mr-2" />
-                            Settings
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Link href="/mesocycles">
+                                <Button variant="outline" size="sm">
+                                    <ArrowLeft className="h-4 w-4 mr-2" />
+                                    Save and Return
+                                </Button>
+                            </Link>
+                            <Button variant="outline" size="sm">
+                                <Settings className="h-4 w-4 mr-2" />
+                                Settings
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Week selector */}
