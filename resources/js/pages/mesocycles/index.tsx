@@ -1,10 +1,10 @@
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Mesocycle } from '@/types/mesocycle';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Calendar, Dumbbell, TrendingUp } from 'lucide-react';
+import { Plus, Calendar, Dumbbell, TrendingUp, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -31,6 +31,17 @@ export default function Index({ mesocycles }: MesocycleIndexProps) {
                 return 'bg-gray-500/10 text-gray-600 border-gray-500/20';
             default:
                 return 'bg-gray-500/10 text-gray-600 border-gray-500/20';
+        }
+    };
+
+    const handleDelete = (e: React.MouseEvent, mesocycle: Mesocycle) => {
+        e.preventDefault(); // Prevent navigation to mesocycle detail
+        e.stopPropagation(); // Stop event bubbling
+        
+        if (confirm(`Are you sure you want to delete "${mesocycle.name}"? This action cannot be undone and will delete all associated weeks, days, and exercises.`)) {
+            router.delete(`/mesocycles/${mesocycle.id}`, {
+                preserveScroll: true,
+            });
         }
     };
 
@@ -76,27 +87,38 @@ export default function Index({ mesocycles }: MesocycleIndexProps) {
                 ) : (
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {mesocycles.map((mesocycle) => (
-                            <Link key={mesocycle.id} href={`/mesocycles/${mesocycle.id}`}>
-                                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                            <Card key={mesocycle.id} className="hover:shadow-lg transition-shadow h-full group">
+                                <Link href={`/mesocycles/${mesocycle.id}`} className="block">
                                     <CardHeader>
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex-1">
-                                                <CardTitle className="text-lg">
+                                        <div className="flex items-start justify-between gap-2">
+                                            <div className="flex-1 min-w-0">
+                                                <CardTitle className="text-lg truncate">
                                                     {mesocycle.name}
                                                 </CardTitle>
                                                 {mesocycle.description && (
-                                                    <CardDescription className="mt-1">
+                                                    <CardDescription className="mt-1 line-clamp-2">
                                                         {mesocycle.description}
                                                     </CardDescription>
                                                 )}
                                             </div>
-                                            <span
-                                                className={`text-xs px-2 py-1 rounded-full border ${getStatusColor(
-                                                    mesocycle.status
-                                                )}`}
-                                            >
-                                                {mesocycle.status}
-                                            </span>
+                                            <div className="flex items-center gap-2 flex-shrink-0">
+                                                <span
+                                                    className={`text-xs px-2 py-1 rounded-full border ${getStatusColor(
+                                                        mesocycle.status
+                                                    )}`}
+                                                >
+                                                    {mesocycle.status}
+                                                </span>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 hover:text-destructive"
+                                                    onClick={(e) => handleDelete(e, mesocycle)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                    <span className="sr-only">Delete mesocycle</span>
+                                                </Button>
+                                            </div>
                                         </div>
                                     </CardHeader>
 
@@ -138,8 +160,8 @@ export default function Index({ mesocycles }: MesocycleIndexProps) {
                                             </div>
                                         )}
                                     </CardContent>
-                                </Card>
-                            </Link>
+                                </Link>
+                            </Card>
                         ))}
                     </div>
                 )}

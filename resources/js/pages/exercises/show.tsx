@@ -3,14 +3,13 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Create Exercise',
-        href: '/exercises/create',
+        title: 'Exercises',
+        href: '/exercises/show',
     },
 ];
 
@@ -21,7 +20,7 @@ export default function ExerciseForm() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Create a New Exercise</CardTitle>
+                        <CardTitle>Exercise Details</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form className='flex flex-col gap-4 autoComplete=off'>
