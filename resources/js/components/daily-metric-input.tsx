@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Scale, Activity } from 'lucide-react';
-import { Z_VERSION_ERROR } from "node:zlib";
 
 interface DailyMetricInputProps {
   metricType: 'bodyweight' | 'steps';
@@ -37,7 +36,7 @@ export function DailyMetricInput({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    post(route('daily-metrics.store'), {
+    post('/daily-metrics', {
       preserveScroll: true,
       onSuccess: () => {
         reset('value', 'notes');

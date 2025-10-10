@@ -49,7 +49,7 @@ export default function Dashboard() {
 
     const fetchMetrics = async () => {
         try {
-            const response = await axios.get(route('daily-metrics.dashboard'));
+            const response = await axios.get('/daily-metrics/dashboard');
             setMetrics(response.data);
         } catch (error) {
             console.error('Failed to fetch metrics:', error);
