@@ -14,6 +14,14 @@ class DailyMetricResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'date' => $this->date->format('Y-m-d'),
+            'metric_type' => $this->metric_type,
+            'value' => (float) $this->value,
+            'unit' => $this->unit,
+            'notes' => $this->notes,
+            'created_at' => $this->created_at->toISOString(),
+        ];
     }
 }

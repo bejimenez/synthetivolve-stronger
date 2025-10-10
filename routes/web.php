@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DailyMetricController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\MesocycleController;
 use App\Http\Controllers\WorkoutController;
@@ -14,6 +15,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+    
+    // Daily Metrics Routes
+    Route::post('daily-metrics', [DailyMetricController::class, 'store'])->name('daily-metrics.store');
+    Route::patch('daily-metrics/{metric}', [DailyMetricController::class, 'update'])->name('daily-metrics.update');
+    Route::delete('daily-metrics/{metric}', [DailyMetricController::class, 'destroy'])->name('daily-metrics.destroy');
+    Route::get('daily-metrics/dashboard', [DailyMetricController::class, 'dashboard'])->name('daily-metrics.dashboard');
+    
     Route::resource('exercises', ExerciseController::class);
     Route::resource('mesocycles', MesocycleController::class);
     Route::patch('mesocycles/{mesocycle}/training-days/{trainingDay}', [MesocycleController::class, 'updateTrainingDay'])
